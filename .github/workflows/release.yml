@@ -1,0 +1,35 @@
+name: release
+
+# Pushing a tag such as v0.1.0 builds the Windows installer and the portable exe,
+# then attaches both to the GitHub Release for that tag. action-gh-release creates
+# the Release if it does not exist yet.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build Windows installer and portable exe
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          # No code-signing certificate is used yet; do not let electron-builder look for one.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Attach to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Baton-Setup.exe
+            dist/Baton-portable.exe

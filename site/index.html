@@ -1,0 +1,535 @@
+<!doctype html>
+<!--
+  Repo and site URL live in these places. Change all of them if the repo or the Pages URL moves:
+  1. index.html <head>: canonical, og:url, og:image, twitter:image (https://zhenggao-30.github.io/baton/...)
+  2. index.html #get: the download and source links (static hrefs, so they work without JavaScript)
+  3. script.js: the REPO constant, which sets the same #get hrefs on load
+  Release files expected at releases/latest/download/: Baton-Setup.exe and Baton-portable.exe.
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="title">Baton · 一个窗口，调用你拥有的每一个账号</title>
+<meta name="description" content="Baton 让你正在用的 Claude Code 窗口，把重活交给你拥有的其他账号去做。" data-i18n-content="meta_desc">
+<meta name="theme-color" content="#1c1b19">
+<link rel="canonical" href="https://zhenggao-30.github.io/baton/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Baton">
+<meta property="og:title" content="Baton · 一个窗口，调用你拥有的每一个账号" data-i18n-content="og_title">
+<meta property="og:description" content="Baton 让你正在用的 Claude Code 窗口，把重活交给你拥有的其他账号去做。" data-i18n-content="meta_desc">
+<meta property="og:url" content="https://zhenggao-30.github.io/baton/">
+<meta property="og:image" content="https://zhenggao-30.github.io/baton/media/poster.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="Baton 短片的片头：深色背景上写着 One window. Every account you own. 与 Baton 字标。" data-i18n-content="og_image_alt">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Baton · 一个窗口，调用你拥有的每一个账号" data-i18n-content="og_title">
+<meta name="twitter:description" content="Baton 让你正在用的 Claude Code 窗口，把重活交给你拥有的其他账号去做。" data-i18n-content="meta_desc">
+<meta name="twitter:image" content="https://zhenggao-30.github.io/baton/media/poster.jpg">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script>
+  // Set before first paint so entrance motion does not flash; script.js reveals everything it hides.
+  if ('IntersectionObserver' in window && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('js');
+</script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">跳到正文</a>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" data-i18n-aria="brand_aria" aria-label="Baton 首页">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle class="r1" cx="12" cy="16" r="8"/><circle class="r2" cx="20" cy="16" r="8"/></svg>
+      <span>Baton</span>
+    </a>
+    <div class="nav-right">
+      <button type="button" class="lang" id="lang-toggle" data-i18n="lang_btn" data-i18n-aria="lang_aria" aria-label="切换到英文">EN</button>
+      <a class="quiet nav-film" href="#film" data-i18n="nav_film">观看影片</a>
+      <a class="quiet" href="#get" data-i18n="nav_get">获取 Baton</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Stage: the dark hero -->
+  <section class="stage" id="top" aria-labelledby="hero-title">
+    <div class="wrap stage-text">
+      <h1 id="hero-title" data-i18n="hero_title">一个窗口，<br>调用你拥有的每一个账号。</h1>
+      <p class="stage-lead" data-i18n="hero_sub">Baton 让你正在用的 Claude Code 窗口，把重活交给你拥有的其他账号去做。</p>
+      <div class="cta">
+        <a class="btn btn-light" href="#get" data-i18n="cta_get">获取 Baton</a>
+        <a class="btn btn-outline-light" href="#how" data-i18n="cta_how">看它怎么工作</a>
+      </div>
+    </div>
+    <div class="stage-art">
+      <img src="img/hero-rings.jpg" width="1672" height="941" decoding="async" fetchpriority="high"
+           data-i18n-alt="hero_alt" alt="两只相扣的哑光圆环，一只陶土色，一只奶油色，悬在深炭色背景前。">
+    </div>
+  </section>
+
+  <!-- Film: the next block of the same dark stage. No autoplay; script.js pauses it when it scrolls away. -->
+  <section class="stage stage-film" id="film" aria-labelledby="film-h">
+    <div class="wrap">
+      <h2 id="film-h" data-i18n="film_h">Baton，48 秒讲清楚。</h2>
+      <p class="stage-lead" data-i18n="film_p">一段短片：一个窗口，你拥有的几个账号，以及重活怎样交出去。</p>
+      <figure class="film-card">
+        <video controls playsinline preload="none" poster="media/poster.jpg" width="1920" height="1080"
+               aria-label="Baton 48 秒短片" data-i18n-aria="film_aria">
+          <source src="media/baton-promo.mp4" type="video/mp4">
+          <a href="media/baton-promo.mp4" data-i18n="film_fallback">无法播放视频？下载影片（MP4）</a>
+        </video>
+      </figure>
+    </div>
+  </section>
+
+  <!-- The panel -->
+  <section class="section showcase reveal" id="panel" aria-labelledby="sc-h">
+    <div class="wrap">
+      <div class="section-head center">
+        <p class="eyebrow" data-i18n="sc_eyebrow">面板</p>
+        <h2 id="sc-h" data-i18n="sc_h">所有账号，一个面板。</h2>
+        <p class="lead" data-i18n="sc_p">领队、工作账号、各自的额度和正在进行的任务，都在系统托盘里的一个小面板上。</p>
+      </div>
+
+      <figure class="hero-fig">
+        <div class="mock" aria-hidden="true">
+          <div class="mock-head">
+            <svg class="mark" viewBox="0 0 32 32"><circle class="r1" cx="12" cy="16" r="8"/><circle class="r2" cx="20" cy="16" r="8"/></svg>
+            <b>Baton</b>
+            <span class="pill busy"><span data-i18n="m_pill">接管中 · 1</span></span>
+          </div>
+
+          <div class="job-card">
+            <div class="job-top"><b>thesis-code</b><span class="thread">auth-refactor</span></div>
+            <p class="job-last">Edit src/auth/session.ts</p>
+            <span class="job-bar"></span>
+          </div>
+
+          <div class="rail">
+            <div class="acct">
+              <div class="av">
+                <svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="0"/><circle class="ring" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="0"/></svg>
+                <i class="lead-i">Y</i>
+              </div>
+              <div class="who">
+                <b>you@example.com <span class="tag" data-i18n="m_leader">领队</span></b>
+                <small data-i18n="m_ready">就绪</small>
+              </div>
+            </div>
+
+            <div class="acct working">
+              <div class="av">
+                <svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="0"/><circle class="ring" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="0"/></svg>
+                <i>W</i>
+              </div>
+              <div class="who">
+                <b>work@example.com</b>
+                <small data-i18n="m_running">正在工作</small>
+                <div class="u"><span data-i18n="m_5h">5小时</span><span class="u-bar"><i style="width:42%"></i></span><span>42%</span></div>
+                <div class="u"><span data-i18n="m_wk">本周</span><span class="u-bar"><i style="width:18%"></i></span><span>18%</span></div>
+                <div class="model"><span data-i18n="m_model">模型</span><span class="sel">Haiku</span></div>
+              </div>
+            </div>
+
+            <div class="acct limited">
+              <div class="av">
+                <svg viewBox="0 0 42 42"><circle class="track" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="0"/><circle class="ring" cx="21" cy="21" r="19" stroke-dasharray="119.38" stroke-dashoffset="47.8"/></svg>
+                <i>S</i>
+              </div>
+              <div class="who">
+                <b>school@example.com</b>
+                <small data-i18n="m_limited">额度用完 · 14:20 恢复</small>
+                <div class="u"><span data-i18n="m_5h">5小时</span><span class="u-bar"><i class="hot" style="width:100%"></i></span><span>100%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption data-i18n="illus">示意图</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Feature a: Dispatch -->
+  <section class="section reveal" id="dispatch" aria-labelledby="f1-h">
+    <div class="wrap">
+      <figure class="shot">
+        <img src="img/relay.jpg" width="1672" height="941" loading="lazy" decoding="async"
+             data-i18n-alt="relay_alt" alt="三只哑光圆环沿着一条平缓的弧线依次排开，中间那只陶土色的圆环正向前滑动。">
+      </figure>
+      <div class="split">
+        <div class="split-text">
+          <p class="eyebrow" data-i18n="f1_eyebrow">派发</p>
+          <h2 id="f1-h" data-i18n="f1_h">说一句“/baton”，重活交给另一个账号。</h2>
+          <p data-i18n="f1_p1">在 Claude Code 里说“use baton”，或输入 /baton 加上任务。工作账号会用它自己的额度，运行官方 Claude Code 完成这件活。</p>
+          <p data-i18n="f1_p2">做完后，它把报告交回这个窗口，你可以接着和领队聊。</p>
+        </div>
+        <figure class="diagram dcard">
+          <svg class="dg" viewBox="0 0 400 464" role="img" aria-labelledby="d1-t d1-d">
+            <title id="d1-t" data-i18n="d1_title">派发流程</title>
+            <desc id="d1-d" data-i18n="d1_desc">你说“use baton”后，领队写好一份完整的任务说明。如果有空闲的工作账号，它接着同一条线索的会话去做，并读取项目账本，最后把报告交回窗口。如果所有工作账号都到了上限，会返回 NO_WORKER_AVAILABLE 并告诉你；如果这个文件夹里已经有工作账号在干活，会返回 BUSY，需要等待。</desc>
+
+            <rect class="start" x="16" y="16" width="210" height="44" rx="22"/>
+            <text class="t inv" x="121" y="43" text-anchor="middle" data-i18n="d1_n1">你说“use baton”</text>
+            <path class="ac draw" pathLength="1" d="M121 62 V92"/>
+            <path class="ac tip" d="M116 87 L121 93 L126 87"/>
+
+            <rect class="box" x="16" y="96" width="210" height="64" rx="14"/>
+            <text class="t" x="121" y="123" text-anchor="middle" data-i18n="d1_n2a">领队写好任务说明</text>
+            <text class="s" x="121" y="144" text-anchor="middle" data-i18n="d1_n2b">完整、自成一体</text>
+            <path class="ac draw" pathLength="1" d="M121 162 V192" style="--d:.35s"/>
+            <path class="ac tip" d="M116 187 L121 193 L126 187" style="--d:.35s"/>
+
+            <rect class="box q" x="16" y="196" width="210" height="52" rx="26"/>
+            <text class="t" x="121" y="227" text-anchor="middle" data-i18n="d1_q">有空闲的工作账号吗？</text>
+
+            <path class="ln" d="M228 222 H252"/>
+            <path class="ln" d="M247 217 L253 222 L247 227"/>
+            <text class="s sm" x="240" y="213" text-anchor="middle" data-i18n="d1_no">没有</text>
+            <rect class="box" x="258" y="192" width="136" height="60" rx="14"/>
+            <text class="m k" x="326" y="217" text-anchor="middle">NO_WORKER_AVAILABLE</text>
+            <text class="s" x="326" y="239" text-anchor="middle" data-i18n="d1_s1">告诉你</text>
+
+            <path class="ln" d="M226 238 C244 238 238 310 252 310"/>
+            <path class="ln" d="M247 305 L253 310 L247 315"/>
+            <rect class="box" x="258" y="280" width="136" height="60" rx="14"/>
+            <text class="m k" x="326" y="305" text-anchor="middle">BUSY</text>
+            <text class="s" x="326" y="327" text-anchor="middle" data-i18n="d1_s2">文件夹正忙，等待</text>
+
+            <path class="ac draw" pathLength="1" d="M121 250 V280" style="--d:.7s"/>
+            <path class="ac tip" d="M116 275 L121 281 L126 275" style="--d:.7s"/>
+            <text class="a" x="131" y="270" data-i18n="d1_yes">有</text>
+
+            <rect class="box" x="16" y="284" width="210" height="84" rx="14"/>
+            <text class="t" x="121" y="310" text-anchor="middle" data-i18n="d1_w1">工作账号来做</text>
+            <text class="s" x="121" y="332" text-anchor="middle" data-i18n="d1_w2">同一线索，同一会话</text>
+            <text class="s" x="121" y="352" text-anchor="middle" data-i18n="d1_w3">账本：别人做过什么</text>
+            <path class="ac draw" pathLength="1" d="M121 370 V400" style="--d:1.05s"/>
+            <path class="ac tip" d="M116 395 L121 401 L126 395" style="--d:1.05s"/>
+
+            <rect class="box end" x="16" y="404" width="210" height="44" rx="22"/>
+            <text class="t" x="121" y="431" text-anchor="middle" data-i18n="d1_end">报告交回这个窗口</text>
+          </svg>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature b: Memory -->
+  <section class="section reveal" id="memory" aria-labelledby="f2-h">
+    <div class="wrap">
+      <figure class="shot">
+        <img src="img/ledger.jpg" width="1672" height="941" loading="lazy" decoding="async"
+             data-i18n-alt="ledger_alt" alt="许多细细的奶油色圆环层层叠放，像年轮或一叠纸页的边缘，其中一只陶土色圆环微微发光。">
+      </figure>
+      <div class="split">
+        <div class="split-text">
+          <p class="eyebrow" data-i18n="f2_eyebrow">记忆</p>
+          <h2 id="f2-h" data-i18n="f2_h">同一条线索，接着上次的会话继续。</h2>
+          <p data-i18n="f2_p1">每条工作线索都有一个名字。同一个工作会话会被接着用，哪怕 Baton 因为额度把它挪到了另一个账号。</p>
+          <p data-i18n="f2_p2">项目账本记下每个工作账号做过什么，下一个工作账号开工前会先读到它。</p>
+        </div>
+        <div class="visual" aria-hidden="true">
+          <p class="v-label" data-i18n="v_threads">线索</p>
+          <ul class="threads">
+            <li><span>auth-refactor</span><small>work@example.com</small></li>
+            <li><span>thesis-code</span><small>school@example.com</small></li>
+          </ul>
+          <p class="v-label" data-i18n="v_ledger">账本</p>
+          <ul class="ledger">
+            <li><time>10:02</time><span>auth-refactor · Edit src/auth/session.ts</span></li>
+            <li><time>10:31</time><span>thesis-code · Run tests</span></li>
+            <li><time>11:08</time><span>auth-refactor · Run tests</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature c: Usage -->
+  <section class="section reveal" id="usage" aria-labelledby="f3-h">
+    <div class="wrap split">
+      <div class="split-text">
+        <p class="eyebrow" data-i18n="f3_eyebrow">额度</p>
+        <h2 id="f3-h" data-i18n="f3_h">每个账号的额度，一眼看清。</h2>
+        <p data-i18n="f3_p1">5 小时和每周的用量，读自 Claude Code 自己的 /usage，并显示什么时候恢复。</p>
+        <p data-i18n="f3_p2">每个账号都可以设一个默认模型，比如轻活用 Haiku。</p>
+      </div>
+      <div class="visual" aria-hidden="true">
+        <div class="acct">
+          <div class="av"><i>W</i></div>
+          <div class="who">
+            <b>work@example.com</b>
+            <div class="u"><span data-i18n="m_5h">5小时</span><span class="u-bar"><i style="width:42%"></i></span><span>42%</span></div>
+            <small class="reset" data-i18n="v_reset_5h">14:20 恢复</small>
+            <div class="u"><span data-i18n="m_wk">本周</span><span class="u-bar"><i style="width:18%"></i></span><span>18%</span></div>
+            <small class="reset" data-i18n="v_reset_wk">周一 09:00 恢复</small>
+            <div class="model"><span data-i18n="m_model">模型</span><span class="sel">Haiku</span></div>
+          </div>
+        </div>
+        <div class="acct">
+          <div class="av"><i>S</i></div>
+          <div class="who">
+            <b>school@example.com</b>
+            <div class="u"><span data-i18n="m_5h">5小时</span><span class="u-bar"><i class="hot" style="width:100%"></i></span><span>100%</span></div>
+            <small class="reset" data-i18n="v_reset_5h">14:20 恢复</small>
+            <div class="model"><span data-i18n="m_model">模型</span><span class="sel">Sonnet</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Safety net -->
+  <section class="section reveal" id="safety-net" aria-labelledby="sn-h">
+    <div class="wrap split flip">
+      <div class="split-text">
+        <p class="eyebrow" data-i18n="sn_eyebrow">安全网</p>
+        <h2 id="sn-h" data-i18n="sn_h">窗口用到上限时，活不会停下。</h2>
+        <p data-i18n="sn_p1">如果领队账号在任务中途达到套餐上限，Baton 的钩子会注意到，并在后台用下一个就绪的账号接着同一个会话做下去。</p>
+        <p data-i18n="sn_p2">做完会通知你。如果所有账号都到了上限，它会等到最早恢复的那一刻再继续。</p>
+      </div>
+      <figure class="diagram dcard">
+        <svg class="dg" viewBox="0 0 400 488" role="img" aria-labelledby="d3-t d3-d">
+          <title id="d3-t" data-i18n="d3_title">安全网流程</title>
+          <desc id="d3-d" data-i18n="d3_desc">窗口账号达到套餐上限，Baton 的 StopFailure 钩子注意到。如果还有就绪的账号，它用 --resume 在后台接着同一个会话做；如果没有，它等到最早的额度恢复后再继续。两条路最后都会在完成时通知你。</desc>
+
+          <rect class="start" x="16" y="16" width="368" height="48" rx="24"/>
+          <text class="t inv" x="200" y="45" text-anchor="middle" data-i18n="d3_n1">窗口账号达到套餐上限</text>
+          <path class="ac draw" pathLength="1" d="M200 66 V96"/>
+          <path class="ac tip" d="M195 91 L200 97 L205 91"/>
+
+          <rect class="box" x="16" y="100" width="368" height="60" rx="14"/>
+          <text class="t" x="200" y="126" text-anchor="middle" data-i18n="d3_n2">Baton 的钩子注意到了</text>
+          <text class="m" x="200" y="146" text-anchor="middle">StopFailure</text>
+          <path class="ac draw" pathLength="1" d="M200 162 V192" style="--d:.35s"/>
+          <path class="ac tip" d="M195 187 L200 193 L205 187" style="--d:.35s"/>
+
+          <rect class="box q" x="16" y="196" width="368" height="52" rx="26"/>
+          <text class="t" x="200" y="227" text-anchor="middle" data-i18n="d3_q">还有就绪的账号吗？</text>
+
+          <path class="ac draw" pathLength="1" d="M123 250 V284" style="--d:.7s"/>
+          <path class="ac tip" d="M118 279 L123 285 L128 279" style="--d:.7s"/>
+          <text class="a" x="133" y="271" data-i18n="d3_yes">有</text>
+          <path class="ln" d="M314 250 V284"/>
+          <path class="ln" d="M309 279 L314 285 L319 279"/>
+          <text class="s sm" x="324" y="271" data-i18n="d3_no">没有</text>
+
+          <rect class="box" x="16" y="288" width="214" height="92" rx="14"/>
+          <text class="t" x="123" y="314" text-anchor="middle" data-i18n="d3_y1">在后台接着同一个会话</text>
+          <text class="m" x="123" y="336" text-anchor="middle">--resume</text>
+          <text class="s" x="123" y="358" text-anchor="middle" data-i18n="d3_y2">换到下一个就绪的账号</text>
+
+          <rect class="box" x="244" y="288" width="140" height="92" rx="14"/>
+          <text class="t" x="314" y="314" text-anchor="middle" data-i18n="d3_w1">等待</text>
+          <text class="s" x="314" y="336" text-anchor="middle" data-i18n="d3_w2">直到最早的</text>
+          <text class="s" x="314" y="356" text-anchor="middle" data-i18n="d3_w3">额度恢复后继续</text>
+
+          <path class="ac draw" pathLength="1" d="M123 382 C123 404 200 398 200 418" style="--d:1.05s"/>
+          <path class="ln dash" d="M314 382 C314 404 200 398 200 418"/>
+          <path class="ac tip" d="M195 413 L200 419 L205 413" style="--d:1.05s"/>
+
+          <rect class="box end" x="16" y="424" width="368" height="48" rx="24"/>
+          <text class="t" x="200" y="453" text-anchor="middle" data-i18n="d3_end">完成后通知你</text>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section reveal" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="how_eyebrow">怎么用</p>
+        <h2 id="how-h" data-i18n="how_h">三步开始。</h2>
+      </div>
+      <div class="split how-split">
+        <ol class="steps">
+          <li>
+            <span class="num" aria-hidden="true">1</span>
+            <div>
+              <h3 data-i18n="how_1_h">添加你拥有的账号</h3>
+              <p data-i18n="how_1_p">每个账号登录一次。Baton 把它们和你平时的 Claude Code 登录分开保存。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">2</span>
+            <div>
+              <h3 data-i18n="how_2_h">一键连接</h3>
+              <p data-i18n="how_2_p">点“连接”，Baton 给 Claude Code 加上两条钩子、一个工具和一个技能，并先备份你的设置。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">3</span>
+            <div>
+              <h3 data-i18n="how_3_h">在 Claude Code 里说“use baton”</h3>
+              <p data-i18n="how_3_p">把重活交给你的工作账号，它做完会把报告交回来。</p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="diagram dcard">
+          <svg class="dg" viewBox="0 0 400 556" role="img" aria-labelledby="d2-t d2-d">
+            <title id="d2-t" data-i18n="d2_title">Baton 的工作原理</title>
+            <desc id="d2-d" data-i18n="d2_desc">你的 Claude Code 窗口是领队，它通过 baton_run 把任务交给在你电脑上（127.0.0.1）运行的 Baton。Baton 有两条钩子、baton_run 工具、项目账本和命名线索。它把任务交给一个工作账号，报告再一路交回窗口。每个工作账号在自己的登录文件夹里运行官方 Claude Code，额度读自它的 /usage，并可以各自选择模型。登录信息从不离开各自的文件夹。</desc>
+
+            <rect class="box" x="20" y="10" width="360" height="64" rx="14"/>
+            <text class="t" x="200" y="38" text-anchor="middle" data-i18n="d2_leader">你的 Claude Code 窗口 · 领队</text>
+            <text class="s" x="200" y="58" text-anchor="middle" data-i18n="d2_leader_s">负责规划，和你对话</text>
+
+            <path class="ac draw" pathLength="1" d="M150 76 V128"/>
+            <path class="ac tip" d="M145 123 L150 129 L155 123"/>
+            <text class="m" x="140" y="108" text-anchor="end">baton_run</text>
+            <path class="ln dash" d="M250 132 V78"/>
+            <path class="ln" d="M245 83 L250 77 L255 83"/>
+            <text class="s sm" x="260" y="108" data-i18n="d2_report">报告</text>
+
+            <rect class="box hub" x="20" y="134" width="360" height="140" rx="16"/>
+            <circle class="mk1" cx="42" cy="162" r="7"/><circle class="mk2" cx="52" cy="162" r="7"/>
+            <text class="t serif" x="68" y="168">Baton</text>
+            <text class="s sm" x="364" y="167" text-anchor="end" data-i18n="d2_local">在你的电脑上 · 127.0.0.1</text>
+            <rect class="chip" x="36" y="186" width="158" height="30" rx="8"/>
+            <text class="c" x="115" y="206" text-anchor="middle" data-i18n="d2_hooks">两条钩子</text>
+            <rect class="chip" x="206" y="186" width="158" height="30" rx="8"/>
+            <text class="c" x="285" y="206" text-anchor="middle" data-i18n="d2_tool">baton_run 工具</text>
+            <rect class="chip" x="36" y="226" width="158" height="30" rx="8"/>
+            <text class="c" x="115" y="246" text-anchor="middle" data-i18n="d2_ledger">项目账本</text>
+            <rect class="chip" x="206" y="226" width="158" height="30" rx="8"/>
+            <text class="c" x="285" y="246" text-anchor="middle" data-i18n="d2_threads">命名线索</text>
+
+            <path class="ac draw" pathLength="1" d="M95 276 V346" style="--d:.4s"/>
+            <path class="ac tip" d="M90 341 L95 347 L100 341" style="--d:.4s"/>
+            <text class="a" x="85" y="316" text-anchor="end" data-i18n="d2_job">任务</text>
+            <path class="ln dash" d="M119 348 V278"/>
+            <path class="ln" d="M114 283 L119 277 L124 283"/>
+            <text class="s sm" x="129" y="316" data-i18n="d2_report">报告</text>
+            <path class="ln dash" d="M293 348 V278"/>
+            <path class="ln" d="M288 283 L293 277 L298 283"/>
+            <text class="m" x="303" y="316">/usage</text>
+
+            <rect class="box" x="20" y="350" width="174" height="150" rx="14"/>
+            <text class="t" x="36" y="378" data-i18n="d2_wa">工作账号 A</text>
+            <circle class="dot" cx="178" cy="373" r="3.5"/>
+            <text class="s" x="36" y="400" data-i18n="d2_official">官方 Claude Code</text>
+            <path class="lock" d="M37.5 414 v-2.5 a3 3 0 0 1 6 0 V414 M35.5 414 h10 v7.5 h-10 z"/>
+            <text class="s" x="51" y="422" data-i18n="d2_folder">自己的登录文件夹</text>
+            <rect class="trk" x="36" y="436" width="142" height="3" rx="1.5"/>
+            <rect class="fil" x="36" y="436" width="60" height="3" rx="1.5"/>
+            <rect class="trk" x="36" y="444" width="142" height="3" rx="1.5"/>
+            <rect class="fil" x="36" y="444" width="26" height="3" rx="1.5"/>
+            <text class="m" x="36" y="477">/usage</text>
+            <rect class="chip" x="120" y="462" width="58" height="22" rx="11"/>
+            <text class="c sm" x="149" y="477" text-anchor="middle">Haiku</text>
+
+            <rect class="box" x="206" y="350" width="174" height="150" rx="14"/>
+            <text class="t" x="222" y="378" data-i18n="d2_wb">工作账号 B</text>
+            <text class="s" x="222" y="400" data-i18n="d2_official">官方 Claude Code</text>
+            <path class="lock" d="M223.5 414 v-2.5 a3 3 0 0 1 6 0 V414 M221.5 414 h10 v7.5 h-10 z"/>
+            <text class="s" x="237" y="422" data-i18n="d2_folder">自己的登录文件夹</text>
+            <rect class="trk" x="222" y="436" width="142" height="3" rx="1.5"/>
+            <rect class="fil" x="222" y="436" width="108" height="3" rx="1.5"/>
+            <rect class="trk" x="222" y="444" width="142" height="3" rx="1.5"/>
+            <rect class="fil" x="222" y="444" width="44" height="3" rx="1.5"/>
+            <text class="m" x="222" y="477">/usage</text>
+            <rect class="chip" x="306" y="462" width="58" height="22" rx="11"/>
+            <text class="c sm" x="335" y="477" text-anchor="middle">Sonnet</text>
+
+            <text class="s sm" x="200" y="538" text-anchor="middle" data-i18n="d2_lock">登录信息从不离开各自的文件夹。</text>
+          </svg>
+          <figcaption data-i18n="d2_cap">每个工作账号的额度读自它自己的 /usage，并可以各自选一个默认模型。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="section reveal" id="principles" aria-labelledby="pr-h">
+    <div class="wrap">
+      <figure class="shot">
+        <img src="img/private.jpg" width="1672" height="941" loading="lazy" decoding="async"
+             data-i18n-alt="private_alt" alt="一只陶土色的哑光圆环静静放在透明玻璃罩里，下面是深炭色的台面。">
+      </figure>
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="pr_eyebrow">原则</p>
+        <h2 id="pr-h" data-i18n="pr_h">少做事，做得清楚。</h2>
+      </div>
+      <div class="principles">
+        <article class="pr">
+          <h3 data-i18n="pr1_h">凭证不离开各自的文件夹</h3>
+          <p data-i18n="pr1_p">登录始终走 Claude Code 自己的流程，每个账号的令牌只留在它自己的 Claude Code 文件夹里。Baton 不读取、不复制、也不发送你的 Claude 凭证。</p>
+        </article>
+        <article class="pr">
+          <h3 data-i18n="pr2_h">只在你的电脑上运行</h3>
+          <p data-i18n="pr2_p">Baton 只在 127.0.0.1 上运行，不向任何地方发送任何东西。它不代理 API 流量，也不修改 Claude Code 程序。</p>
+        </article>
+        <article class="pr">
+          <h3 data-i18n="pr3_h">一键撤销</h3>
+          <p data-i18n="pr3_p">断开连接会恢复你的 Claude 设置。除非你选择删除，已保存的账号登录会保留。</p>
+        </article>
+        <article class="pr">
+          <h3 data-i18n="pr4_h">直说限制</h3>
+          <p data-i18n="pr4_p">下面一节写清楚了它的边界。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Good to know -->
+  <section class="section reveal" id="good-to-know" aria-labelledby="gk-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="gk_eyebrow">需要知道</p>
+        <h2 id="gk-h" data-i18n="gk_h">它适合谁，以及边界在哪里。</h2>
+      </div>
+      <ul class="notes">
+        <li data-i18n="gk1">Baton 适合合法持有多个自有账号的人，比如个人账号和工作账号。</li>
+        <li data-i18n="gk2">每个工作账号都用官方 Claude Code，在它自己的登录下运行。Baton 不会合并或共享同一个登录的额度。</li>
+        <li data-i18n="gk3">每个账号的额度限制与条款依然适用：<a href="https://www.anthropic.com/legal/consumer-terms">Consumer Terms</a> 和 <a href="https://www.anthropic.com/legal/aup">Usage Policy</a>，以及组织的条款（如果账号是 Team 或 Enterprise 席位）。</li>
+        <li data-i18n="gk4">Windows 优先。</li>
+        <li data-i18n="gk5">还没有在桌面 App 的 Code 标签页里遇到真实的套餐限额事件，故障转移路径目前用模拟事件测试。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Get Baton -->
+  <section class="section reveal" id="get" aria-labelledby="get-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="get_eyebrow">获取</p>
+        <h2 id="get-h" data-i18n="get_h">Windows · 0.1 早期版本</h2>
+        <p class="lead" data-i18n="get_p">下载安装包后运行，也可以直接阅读源码。</p>
+      </div>
+      <div class="get-box">
+        <div class="get-actions">
+          <a class="btn btn-ink" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-Setup.exe" data-repo-path="/releases/latest/download/Baton-Setup.exe" data-i18n="get_win">下载 Windows 版</a>
+          <a class="btn btn-line" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-portable.exe" data-repo-path="/releases/latest/download/Baton-portable.exe" data-i18n="get_portable">便携版</a>
+          <a class="get-src" href="https://github.com/zhenggao-30/baton" data-repo-path="" data-i18n="get_source">在 GitHub 查看源码</a>
+        </div>
+        <ul class="get-notes">
+          <li data-i18n="get_n1">适用于 Windows（目前只在 Windows 11 上测试过），并且需要已经装好 Claude Code（桌面 App 或命令行 CLI）。</li>
+          <li data-i18n="get_n2">安装包还没有代码签名，Windows SmartScreen 可能显示“未知发布者”。点“更多信息”，再点“仍要运行”。</li>
+          <li data-i18n="get_n3">Baton 是开源软件（MIT 许可），每一行代码都可以读。</li>
+          <li data-i18n="get_n4">这是早期版本 0.1。</li>
+        </ul>
+        <div class="build">
+          <h3 data-i18n="get_build_h">自己构建</h3>
+          <p class="get-note" data-i18n="get_note">在项目文件夹中运行：</p>
+          <pre tabindex="0"><code>npm install
+npm start</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p data-i18n="foot">Baton 是独立工具，与 Anthropic 无关，可配合 Claude Code 使用。</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

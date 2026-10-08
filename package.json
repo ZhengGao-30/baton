@@ -1,0 +1,86 @@
+{
+  "name": "baton",
+  "productName": "Baton",
+  "version": "0.1.0",
+  "description": "Use several of your own Claude accounts from one Claude Code window: hand heavy jobs to your other accounts, with shared memory and usage at a glance.",
+  "author": { "name": "ZhengGao-30", "url": "https://github.com/ZhengGao-30" },
+  "homepage": "https://zhenggao-30.github.io/baton/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhenggao-30/baton.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhenggao-30/baton/issues"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "electron",
+    "tray-app",
+    "accounts",
+    "usage-limits"
+  ],
+  "main": "src/main.js",
+  "bin": {
+    "baton": "src/cli.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "node src/dev.js",
+    "test": "node --test test/*.test.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "dev.baton.app",
+    "productName": "Baton",
+    "copyright": "Copyright (c) 2026 ZhengGao-30",
+    "directories": {
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**",
+      "ui/**",
+      "build/icon.png",
+      "build/icon.ico",
+      "build/tray.png",
+      "package.json"
+    ],
+    "icon": "build/icon.png",
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "shortcutName": "Baton",
+      "deleteAppDataOnUninstall": false,
+      "include": "build/installer.nsh",
+      "artifactName": "Baton-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Baton-portable.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "asar": false
+  }
+}
