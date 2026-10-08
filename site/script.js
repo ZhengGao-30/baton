@@ -203,11 +203,10 @@
     current = isEn ? 'en' : 'zh';
   }
 
-  // Saved choice wins; otherwise follow the browser language (Chinese stays the HTML default).
+  // The site opens in Chinese for everyone. Only a choice the visitor made themselves (the language button) is
+  // remembered and wins; the browser's language is deliberately not used.
   var saved = readSaved();
-  var initial = saved === 'en' || saved === 'zh'
-    ? saved
-    : ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en');
+  var initial = saved === 'en' || saved === 'zh' ? saved : 'zh';
   apply(initial);
 
   toggle.addEventListener('click', function () {
