@@ -92,7 +92,7 @@ The project website is at <https://zhenggao-30.github.io/baton/>, with an overvi
 
 ## Contributing
 
-Bug reports, feature ideas and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) first. To report a security problem, use the private route in [SECURITY.md](SECURITY.md), not a public issue.
+Bug reports, feature ideas and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) first. To report a security problem, use the private route in [SECURITY.md](SECURITY.md), not a public issue. Everyone who has helped is listed in [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ## License
 

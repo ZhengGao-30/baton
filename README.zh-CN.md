@@ -91,7 +91,7 @@ npm run dist -- -c.directories.output=C:/baton-build/dist
 
 ## 参与贡献
 
-欢迎提交问题报告、功能建议和 Pull Request。请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。如果你发现安全问题，请按 [SECURITY.md](SECURITY.md) 中的私密渠道报告，不要公开提交 issue。
+欢迎提交问题报告、功能建议和 Pull Request。请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。如果你发现安全问题，请按 [SECURITY.md](SECURITY.md) 中的私密渠道报告，不要公开提交 issue。所有帮助过这个项目的人都列在 [CONTRIBUTORS.md](CONTRIBUTORS.md) 里。
 
 ## 许可证
 
