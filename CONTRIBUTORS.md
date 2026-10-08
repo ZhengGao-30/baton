@@ -13,6 +13,9 @@ Baton exists thanks to these people. 感谢以下贡献者。
     <td align="center" width="140">
       <a href="https://github.com/JiaojiaoSwin"><img src="https://avatars.githubusercontent.com/u/26132336?v=4&s=120" width="72" height="72" alt="JiaojiaoSwin"><br><sub><b>JiaojiaoSwin</b></sub></a>
     </td>
+    <td align="center" width="140">
+      <a href="https://github.com/Polaris-Aeterna"><img src="https://avatars.githubusercontent.com/u/257109377?v=4&s=120" width="72" height="72" alt="Polaris-Aeterna"><br><sub><b>Polaris-Aeterna</b></sub></a>
+    </td>
   </tr>
 </table>
 
