@@ -21,6 +21,6 @@ Baton exists thanks to these people. 感谢以下贡献者。
 
 ## How to be listed
 
-Anyone who helps is welcome here: code, bug reports, testing, design, translation or ideas. Open a pull request that adds yourself to the table above (a GitHub username is enough; please do not add an e-mail address).
+Anyone who helps is welcome here: code, bug reports, testing, design, translation or ideas. Open a pull request that adds yourself to the table above, or ask the maintainer to add you (a GitHub username is enough; please do not add an e-mail address).
 
 GitHub's own "Contributors" list on the repository page is built from the authors and co-authors of commits: a `Co-authored-by:` line in a commit message credits someone without them having to commit anything themselves. This file also credits contributions that are not code.
