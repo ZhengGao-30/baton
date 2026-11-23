@@ -9,7 +9,7 @@ Each one runs the official client under its own login, and remembers what it did
 
 [![Release](https://img.shields.io/github/v/release/zhenggao-30/baton?style=for-the-badge&color=d97757&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](LICENSE)
-[![Platform: Windows](https://img.shields.io/badge/platform-Windows-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](#download)
+[![Platform: Windows | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](#download)
 [![Tests](https://img.shields.io/github/actions/workflow/status/zhenggao-30/baton/test.yml?style=for-the-badge&label=tests&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/actions/workflows/test.yml)
 [![Stars](https://img.shields.io/github/stars/zhenggao-30/baton?style=for-the-badge&color=d97757&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/stargazers)
 
@@ -31,9 +31,17 @@ Each one runs the official client under its own login, and remembers what it did
 &nbsp;
 [![Download the portable build](https://img.shields.io/badge/Portable-Baton--portable.exe-f6f1e7?style=for-the-badge&logo=windows&logoColor=f6f1e7&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-portable.exe)
 
+[![Download for Apple Silicon Macs](https://img.shields.io/badge/macOS_Apple_Silicon-Baton--mac--arm64.dmg-d97757?style=for-the-badge&logo=apple&logoColor=white&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-arm64.dmg)
+&nbsp;
+[![Download for Intel Macs](https://img.shields.io/badge/macOS_Intel-Baton--mac--x64.dmg-f6f1e7?style=for-the-badge&logo=apple&logoColor=f6f1e7&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-x64.dmg)
+
 </div>
 
-**Baton-Setup.exe** installs for your Windows user and adds a Start menu shortcut. **Baton-portable.exe** runs without installing. Neither is code-signed yet, so SmartScreen may say "unknown publisher": click **More info**, then **Run anyway**. Baton is open source; read it or [build it yourself](#build-from-source).
+**Windows.** **Baton-Setup.exe** installs for your Windows user and adds a Start menu shortcut. **Baton-portable.exe** runs without installing. Neither is code-signed yet, so SmartScreen may say "unknown publisher": click **More info**, then **Run anyway**.
+
+**macOS** (12 or later). Open the `.dmg` (Apple Silicon: `arm64`, Intel: `x64`) and drag **Baton** into **Applications**. The app is not notarized by Apple yet, so the first time you open it macOS says it cannot verify the developer: click **Done**, open **System Settings › Privacy & Security**, and click **Open Anyway** next to Baton. (Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/Baton.app`.) Baton lives in the menu bar; its Dock icon is there only while the window is open.
+
+Baton is open source; read it or [build it yourself](#build-from-source).
 
 ## Why Baton
 
@@ -56,7 +64,7 @@ Your best work window is tied to a single account, and that account's usage is f
 </tr>
 <tr>
 <td valign="top"><b>Private and local</b><br>Everything listens on <code>127.0.0.1</code>. Baton never touches your credentials.</td>
-<td valign="top"><b>Clean uninstall</b><br>One click, or the Windows uninstaller, removes Baton's wiring from Claude Code.</td>
+<td valign="top"><b>Clean uninstall</b><br>One click (or the Windows uninstaller) removes Baton's wiring from Claude Code.</td>
 </tr>
 <tr>
 <td valign="top" colspan="2"><b>English and Chinese</b><br>The panel and the website switch between both languages.</td>
@@ -116,7 +124,7 @@ sequenceDiagram
 - [x] Sign-in only through Claude Code's own flow (`claude auth login`); tokens stay in each account's own folder
 - [x] The Claude Code binary is not modified, and no API traffic is proxied
 - [x] Local only: the panel, its API and the hooks listen on `127.0.0.1`, and Baton sends nothing anywhere
-- [x] One-click undo (Settings, Danger zone, *Remove Baton*) and a clean Windows uninstall
+- [x] One-click undo (Settings, Danger zone, *Remove Baton*), a clean Windows uninstall, and on macOS *Remove Baton* also deletes its login item, so the app can then simply go to the Trash
 - [x] Saved sign-ins are kept unless you tick the box to delete them
 
 > [!NOTE]
@@ -124,13 +132,13 @@ sequenceDiagram
 > - Baton is an independent tool, not made by or affiliated with Anthropic; it works with Claude Code.
 > - Each account's usage limits and terms still apply: the [Consumer Terms](https://www.anthropic.com/legal/consumer-terms) and [Usage Policy](https://www.anthropic.com/legal/aup), and your organisation's terms for a Team or Enterprise seat. Baton changes no account's limits.
 > - Use only accounts you own, and never share a login. Baton does not pool one login's usage; each worker runs the official client under its own login.
-> - Built and tested on Windows 11. The macOS (`dmg`) and Linux (`AppImage`) targets are configured but untested.
+> - Built and tested on Windows 11 and on macOS 26 (Apple Silicon). The Intel Mac build and the Linux (`AppImage`) target are built but untested.
 
 > [!WARNING]
 > **Not verified yet**
 > - A real plan-limit event. The failover path is tested with simulated limit events and with real accounts, but no real limit has hit it yet.
 > - Clean PCs and Windows 10. The installer and uninstaller were run once, silently, on the machine they were built on (Windows 11).
-> - Code signing. The files are unsigned (see [Download](#download)).
+> - Code signing. The Windows files are unsigned and the Mac app is only ad-hoc signed, not notarized (see [Download](#download)).
 
 <details>
 <summary><b>Under the hood</b></summary>
@@ -155,9 +163,10 @@ You need Node.js (CI uses Node 22).
 npm install
 npm test                  # engine, takeover, hooks, workers, MCP protocol, connect/remove (fake `claude`)
 node src/dev.js --demo    # the panel in a browser with throwaway demo accounts
-npm start                 # the tray app
+npm start                 # the tray / menu bar app
 node src/cli.js           # terminal: add / login / list / connect / disconnect / remove-all
 npm run dist              # Windows installer and portable exe, written to dist/
+npm run dist:mac          # on a Mac: Baton-mac-arm64/x64 .dmg and .zip, written to dist/
 ```
 
 If `npm run dist` fails with `EPERM` when electron-builder renames a file, build into a folder that sync tools and virus scanners don't watch:

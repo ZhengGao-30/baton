@@ -10,6 +10,7 @@
     (function () {
       var d = document.documentElement, hash = location.hash;
       if (/[#&]m=1\b/.test(hash)) d.dataset.material = 'mica';
+      if (/Mac/i.test(navigator.platform || navigator.userAgent)) d.dataset.os = 'mac'; // traffic lights on the left
       if (/[#&]boot=1\b/.test(hash)) {
         if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) d.classList.add('booting');
         try { history.replaceState(null, '', location.pathname + (d.dataset.material ? '#m=1' : '')); } catch (e) { /* a reload just skips it */ }

@@ -1,6 +1,7 @@
 'use strict';
 // Draws the Baton icon (two interlocked rings on a deep ink tile) as PNG and ICO files, no dependencies.
-// Writes build/icon.png (512), build/tray.png (64) and build/icon.ico (16-256, PNG-compressed entries).
+// Writes build/icon.png (512), build/tray.png (64), build/icon.ico (16-256, PNG-compressed entries)
+// and the macOS menu bar template build/trayTemplate.png (18) + trayTemplate@2x.png (36).
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
@@ -71,6 +72,35 @@ function render(size) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
 }
 
+// macOS menu bar icon: just the two linked rings, black on transparent. Named *Template.png so macOS treats it as a
+// template image and tints it for light and dark menu bars. The ring that passes under leaves a clear seam.
+function renderTemplate(size) {
+  const SS = 8;
+  const px = Buffer.alloc(size * size * 4);
+  const cx = size / 2, cy = size / 2;
+  const R = size * 0.27, W = size * 0.1, d = size * 0.16, gap = size * 0.06;
+  const ringDist = (x, y, ox) => Math.abs(Math.hypot(x - ox, y - cy) - R);
+  const left = cx - d, right = cx + d;
+  const ink = (x, y) => {
+    const dl = ringDist(x, y, left), dr = ringDist(x, y, right);
+    const inL = dl <= W / 2, inR = dr <= W / 2;
+    if (!inL && !inR) return false;
+    if (inL && inR) return true;
+    if (inR && y < cy && dl <= W / 2 + gap) return false; // left ring passes over at the top
+    if (inL && y >= cy && dr <= W / 2 + gap) return false; // right ring passes over at the bottom
+    return true;
+  };
+  for (let j = 0; j < size; j++) for (let i = 0; i < size; i++) {
+    let a = 0;
+    for (let sj = 0; sj < SS; sj++) for (let si = 0; si < SS; si++) if (ink(i + (si + 0.5) / SS, j + (sj + 0.5) / SS)) a++;
+    px[(j * size + i) * 4 + 3] = Math.round((a / (SS * SS)) * 255); // rgb stays 0: black
+  }
+  const raw = Buffer.alloc((size * 4 + 1) * size);
+  for (let j = 0; j < size; j++) { raw[j * (size * 4 + 1)] = 0; px.copy(raw, j * (size * 4 + 1) + 1, j * size * 4, (j + 1) * size * 4); }
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(size, 0); ihdr.writeUInt32BE(size, 4); ihdr[8] = 8; ihdr[9] = 6;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
+}
+
 // ICO container: ICONDIR, one ICONDIRENTRY per image, then the PNG files themselves (supported since Windows Vista).
 function makeIco(images) {
   const head = Buffer.alloc(6 + 16 * images.length);
@@ -95,4 +125,6 @@ const png = (size) => { if (!cache.has(size)) cache.set(size, render(size)); ret
 fs.writeFileSync(path.join(out, 'icon.png'), png(512));
 fs.writeFileSync(path.join(out, 'tray.png'), png(64));
 fs.writeFileSync(path.join(out, 'icon.ico'), makeIco([16, 24, 32, 48, 64, 128, 256].map((size) => ({ size, png: png(size) }))));
-console.log('wrote build/icon.png, build/tray.png and build/icon.ico');
+fs.writeFileSync(path.join(out, 'trayTemplate.png'), renderTemplate(18));
+fs.writeFileSync(path.join(out, 'trayTemplate@2x.png'), renderTemplate(36));
+console.log('wrote build/icon.png, build/tray.png, build/icon.ico and build/trayTemplate(@2x).png');

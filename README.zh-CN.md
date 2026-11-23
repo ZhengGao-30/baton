@@ -9,7 +9,7 @@ Baton 让你的 Claude Code 窗口把重活交给你*其他*的 Claude 账号。
 
 [![Release](https://img.shields.io/github/v/release/zhenggao-30/baton?style=for-the-badge&color=d97757&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](LICENSE)
-[![Platform: Windows](https://img.shields.io/badge/platform-Windows-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](#下载)
+[![Platform: Windows | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-f6f1e7?style=for-the-badge&labelColor=1f1e1d)](#下载)
 [![Tests](https://img.shields.io/github/actions/workflow/status/zhenggao-30/baton/test.yml?style=for-the-badge&label=tests&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/actions/workflows/test.yml)
 [![Stars](https://img.shields.io/github/stars/zhenggao-30/baton?style=for-the-badge&color=d97757&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/stargazers)
 
@@ -31,9 +31,17 @@ Baton 让你的 Claude Code 窗口把重活交给你*其他*的 Claude 账号。
 &nbsp;
 [![下载免安装版](https://img.shields.io/badge/免安装-Baton--portable.exe-f6f1e7?style=for-the-badge&logo=windows&logoColor=f6f1e7&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-portable.exe)
 
+[![下载 Apple 芯片 Mac 版](https://img.shields.io/badge/macOS_Apple_芯片-Baton--mac--arm64.dmg-d97757?style=for-the-badge&logo=apple&logoColor=white&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-arm64.dmg)
+&nbsp;
+[![下载 Intel Mac 版](https://img.shields.io/badge/macOS_Intel-Baton--mac--x64.dmg-f6f1e7?style=for-the-badge&logo=apple&logoColor=f6f1e7&labelColor=1f1e1d)](https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-x64.dmg)
+
 </div>
 
-**Baton-Setup.exe** 装在当前 Windows 用户下，并在开始菜单放一个快捷方式；**Baton-portable.exe** 免安装，直接运行。两者目前都还没有代码签名，SmartScreen 可能提示"未知发布者"：点 **更多信息**，再点 **仍要运行**。Baton 是开源的，你可以自己读代码，或者[从源码构建](#从源码构建)。
+**Windows。** **Baton-Setup.exe** 装在当前 Windows 用户下，并在开始菜单放一个快捷方式；**Baton-portable.exe** 免安装，直接运行。两者目前都还没有代码签名，SmartScreen 可能提示"未知发布者"：点 **更多信息**，再点 **仍要运行**。
+
+**macOS**（12 及以上）。打开 `.dmg`（Apple 芯片选 `arm64`，Intel 选 `x64`），把 **Baton** 拖进 **应用程序**。App 还没有经过 Apple 公证，第一次打开时 macOS 会提示无法验证开发者：点 **完成**，打开 **系统设置 › 隐私与安全性**，在 Baton 旁边点 **仍要打开**。（也可以在终端运行 `xattr -dr com.apple.quarantine /Applications/Baton.app`。）Baton 常驻在菜单栏；只有窗口打开时程序坞里才有它的图标。
+
+Baton 是开源的，你可以自己读代码，或者[从源码构建](#从源码构建)。
 
 ## 为什么需要 Baton
 
@@ -56,7 +64,7 @@ Baton 让你的 Claude Code 窗口把重活交给你*其他*的 Claude 账号。
 </tr>
 <tr>
 <td valign="top"><b>私密，只在本机</b><br>一切只监听 <code>127.0.0.1</code>，Baton 从不碰你的凭据。</td>
-<td valign="top"><b>干净卸载</b><br>一键撤销，或者用 Windows 卸载程序，都会清除 Baton 接入 Claude Code 的部分。</td>
+<td valign="top"><b>干净卸载</b><br>一键撤销（或者用 Windows 卸载程序）就会清除 Baton 接入 Claude Code 的部分。</td>
 </tr>
 <tr>
 <td valign="top" colspan="2"><b>中文和英文</b><br>面板和网站都可以在两种语言之间切换。</td>
@@ -116,7 +124,7 @@ sequenceDiagram
 - [x] 登录只走 Claude Code 自己的流程（`claude auth login`），令牌留在各账号自己的文件夹里
 - [x] 不修改 Claude Code 本身，也不转发任何 API 流量
 - [x] 只在本机运行：面板、本地接口和钩子都只监听 `127.0.0.1`，Baton 不会把任何内容发到别处
-- [x] 一键撤销（设置，"危险操作"，*Remove Baton*），Windows 卸载也很干净
+- [x] 一键撤销（设置，"危险操作"，*Remove Baton*），Windows 卸载也很干净；在 macOS 上 *Remove Baton* 还会删掉它的开机启动项，之后把 App 拖进废纸篓即可
 - [x] 已保存的登录默认保留，除非你主动勾选删除
 
 > [!NOTE]
@@ -124,13 +132,13 @@ sequenceDiagram
 > - Baton 是独立工具，不是 Anthropic 制作的，也与 Anthropic 没有隶属关系；它与 Claude Code 配合使用。
 > - 每个账号的额度限制和使用条款依然适用：[Consumer Terms](https://www.anthropic.com/legal/consumer-terms) 和 [Usage Policy](https://www.anthropic.com/legal/aup)；Team 或 Enterprise 席位还要遵守你所在机构的条款。Baton 不会改变任何账号的额度。
 > - 只使用你自己拥有的账号，绝不共享登录。Baton 不会汇集一个登录的额度；每个工作账号都用自己的登录运行官方客户端。
-> - 在 Windows 11 上构建和测试。macOS（`dmg`）和 Linux（`AppImage`）的打包配置已写好，但没有测试过。
+> - 在 Windows 11 和 macOS 26（Apple 芯片）上构建和测试。Intel Mac 版和 Linux（`AppImage`）已能打包，但没有测试过。
 
 > [!WARNING]
 > **尚未验证**
 > - 真正遇到一次套餐额度上限。故障转移已用模拟的额度事件和真实账号测试过，但还没有真实的额度上限触发过它。
 > - 干净的电脑和 Windows 10。安装程序和卸载程序只在构建它们的那台电脑（Windows 11）上静默运行过一次。
-> - 代码签名。这些文件没有签名（见[下载](#下载)）。
+> - 代码签名。Windows 文件没有签名，Mac 版只有临时（ad-hoc）签名、没有经过公证（见[下载](#下载)）。
 
 <details>
 <summary><b>技术细节</b></summary>
@@ -155,9 +163,10 @@ sequenceDiagram
 npm install
 npm test                  # 引擎、接管、钩子、工作账号、MCP 协议、连接/移除（使用假的 `claude`）
 node src/dev.js --demo    # 在浏览器里打开面板，使用一次性的演示账号
-npm start                 # 托盘应用
+npm start                 # 托盘 / 菜单栏应用
 node src/cli.js           # 终端命令：add / login / list / connect / disconnect / remove-all
 npm run dist              # Windows 安装程序和免安装版，输出到 dist/
+npm run dist:mac          # 在 Mac 上：Baton-mac-arm64/x64 的 .dmg 和 .zip，输出到 dist/
 ```
 
 如果 `npm run dist` 在 electron-builder 重命名文件时报 `EPERM`，把输出目录换到不被同步工具或杀毒软件监视的文件夹：

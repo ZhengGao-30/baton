@@ -68,6 +68,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   -webkit-app-region: drag; app-region: drag;
 }
 .titlebar button, .titlebar a { -webkit-app-region: no-drag; app-region: no-drag; }
+/* macOS: the window's close / minimise / zoom buttons are drawn at the top left instead */
+html[data-os="mac"] .titlebar { padding-left: 80px; padding-right: 10px; }
 .brand { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13px; letter-spacing: 0.005em; }
 .brand .mark { width: 18px; height: 18px; }
 .pill {

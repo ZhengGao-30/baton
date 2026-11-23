@@ -29,7 +29,9 @@ function bundledClaudes() {
     path.join(h, 'Library', 'Application Support', 'Claude', 'claude-code'),
     path.join(h, '.config', 'Claude', 'claude-code'),
   ].filter(Boolean);
-  const exe = process.platform === 'win32' ? 'claude.exe' : 'claude';
+  // Windows: <ver>/<build>/claude.exe. macOS: <ver>/<build>/claude.app/Contents/MacOS/claude (a signed app bundle).
+  const exes = process.platform === 'win32' ? ['claude.exe']
+    : ['claude', path.join('claude.app', 'Contents', 'MacOS', 'claude')];
   const found = [];
   for (const root of roots) {
     let versions = [];
@@ -38,8 +40,10 @@ function bundledClaudes() {
       let subs = [];
       try { subs = fs.readdirSync(path.join(root, v)); } catch { continue; }
       for (const sub of subs) {
-        const p = path.join(root, v, sub, exe);
-        try { if (fs.statSync(p).isFile()) found.push({ version: v, path: p }); } catch { /* not a build dir */ }
+        for (const exe of exes) {
+          const p = path.join(root, v, sub, exe);
+          try { if (fs.statSync(p).isFile()) { found.push({ version: v, path: p }); break; } } catch { /* not a build dir */ }
+        }
       }
     }
   }
@@ -50,6 +54,20 @@ function bundledClaudes() {
     return 0;
   });
   return found;
+}
+
+// ~/.nvm/versions/node/<v>/bin for every installed Node, newest first.
+function nvmBins(h) {
+  const root = path.join(process.env.NVM_DIR || path.join(h, '.nvm'), 'versions', 'node');
+  let vs = [];
+  try { vs = fs.readdirSync(root); } catch { return []; }
+  const num = (v) => v.replace(/^v/, '').split('.').map((n) => parseInt(n, 10) || 0);
+  vs.sort((a, b) => {
+    const x = num(a), y = num(b);
+    for (let i = 0; i < 3; i++) if ((y[i] || 0) !== (x[i] || 0)) return (y[i] || 0) - (x[i] || 0);
+    return 0;
+  });
+  return vs.map((v) => path.join(root, v, 'bin'));
 }
 
 function findClaude() {
@@ -65,6 +83,14 @@ function findClaude() {
     ...(win && process.env.APPDATA ? [path.join(process.env.APPDATA, 'npm')] : []),
     '/usr/local/bin',
     '/opt/homebrew/bin',
+    // A Mac app started from Finder or the Dock does not get the shell's PATH: also look where npm puts
+    // global packages under the usual Node version managers and prefixes.
+    ...(win ? [] : [
+      path.join(h, '.npm-global', 'bin'),
+      path.join(h, '.volta', 'bin'),
+      path.join(h, '.bun', 'bin'),
+      ...nvmBins(h),
+    ]),
   );
   for (const dir of dirs) {
     for (const ext of exts) {

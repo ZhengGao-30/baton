@@ -139,6 +139,12 @@ const T = {
     n_failed: (p) => `“${p.job.project}”未能完成`, n_needs_login: (p) => `${p.account} 需要重新登录`,
   },
 };
+// macOS: no "Windows" in the wording, and Baton waits in the menu bar rather than the tray.
+const IS_MAC = /Mac/i.test(navigator.platform || navigator.userAgent);
+if (IS_MAC) {
+  Object.assign(T.en, { start_login: 'Start Baton when I log in to this Mac', set_startup: 'Open at login', set_startup_d: 'Baton waits quietly in the menu bar.' });
+  Object.assign(T.zh, { start_login: '登录 Mac 时自动启动 Baton', set_startup_d: 'Baton 会安静地待在菜单栏里。' });
+}
 let LANG = 'en';
 const t = (k, ...a) => {
   const v = T[LANG][k] ?? T.en[k] ?? k;

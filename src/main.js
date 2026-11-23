@@ -5,6 +5,12 @@
 const { app, BrowserWindow, Tray, Menu, Notification, nativeImage, nativeTheme, shell, powerSaveBlocker } = require('electron');
 const os = require('os');
 const path = require('path');
+
+const isMac = process.platform === 'darwin';
+// A Mac app opened from Finder, the Dock or at login gets a bare PATH; workers need the user's real one
+// (node for the npm `claude`, git, Homebrew tools). Must run before anything spawns a process.
+if (process.platform !== 'win32') require('./core/shellpath').fixPath();
+
 const { createServer } = require('./server');
 const { createIntroGate } = require('./intro');
 const store = require('./core/store');
@@ -53,6 +59,16 @@ if (process.argv.includes('--disconnect')) {
 
   const asset = (f) => path.join(__dirname, '..', 'build', f);
   const windowIcon = () => asset(process.platform === 'win32' ? 'icon.ico' : 'icon.png');
+  // The macOS menu bar wants a monochrome template image (it is tinted for light/dark menu bars by the system).
+  const trayImage = () => {
+    if (!isMac) return nativeImage.createFromPath(asset('tray.png')).resize({ width: 16, height: 16 });
+    const img = nativeImage.createFromPath(asset('trayTemplate.png')); // picks up trayTemplate@2x.png by itself
+    img.setTemplateImage(true);
+    return img;
+  };
+  // Like the Windows tray app, Baton on a Mac lives in the menu bar: its Dock icon is there only while the window is open.
+  const dockShow = () => (isMac && app.dock ? app.dock.show() : Promise.resolve());
+  const dockHide = () => { if (isMac && app.dock) app.dock.hide(); };
 
   const setTooltip = () => tray?.setToolTip(busyCount ? txt().tipBusy(busyCount) : txt().tip);
   function buildMenu() {
@@ -66,7 +82,12 @@ if (process.argv.includes('--disconnect')) {
   function showWindow() {
     if (!win) return;
     if (win.isMinimized()) win.restore();
-    const reveal = () => { win.show(); win.focus(); };
+    const reveal = () => {
+      dockShow().catch(() => {}).finally(() => {
+        win.show(); win.focus();
+        if (isMac) app.focus({ steal: true }); // a menu bar app is not frontmost when its menu is used
+      });
+    };
     // started hidden: the first time the window is opened plays the intro (the page draws its splash, then we show it)
     if (intro.onShow()) win.webContents.executeJavaScript('window.batonIntro && window.batonIntro()').catch(() => {}).finally(reveal);
     else reveal();
@@ -89,6 +110,8 @@ if (process.argv.includes('--disconnect')) {
       width: 420, height: 680, minWidth: 380, minHeight: 520, title: 'Baton', show: false, // shown on ready-to-show
       autoHideMenuBar: true, backgroundColor: playIntro ? INK : theme().bg, icon: windowIcon(),
       titleBarStyle: 'hidden', titleBarOverlay: overlay(), // the page draws the title bar, Windows keeps its own buttons
+      // macOS: the traffic lights sit on the left, vertically centred in the page's 36 px title bar
+      ...(isMac ? { trafficLightPosition: { x: 14, y: 11 } } : {}),
       webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false },
     };
     if (micaSupported) {
@@ -98,12 +121,12 @@ if (process.argv.includes('--disconnect')) {
       } catch { win = null; }
     }
     if (!win) win = new BrowserWindow(opts);
-    win.setIcon(windowIcon());
+    if (typeof win.setIcon === 'function') win.setIcon(windowIcon()); // Windows/Linux only; a Mac app uses its bundle icon
     // The page lets the material show through only when it is really there (#m=1 survives the token redirect).
     const flags = [mica && 'm=1', playIntro && 'boot=1'].filter(Boolean).join('&');
     win.loadURL(`${server.url}${flags ? `#${flags}` : ''}`);
     win.once('ready-to-show', () => {
-      if (!hidden) { win.show(); win.focus(); }
+      if (!hidden) { win.show(); win.focus(); } else dockHide();
       if (playIntro && !mica) setTimeout(() => { if (!win.isDestroyed()) win.setBackgroundColor(theme().bg); }, 2500);
     });
     if (mica) win.webContents.on('dom-ready', () => { win.webContents.executeJavaScript("document.documentElement.dataset.material = 'mica'").catch(() => {}); });
@@ -116,7 +139,26 @@ if (process.argv.includes('--disconnect')) {
     win.webContents.on('will-navigate', (e, url) => {
       if (!url.startsWith(server.origin)) { e.preventDefault(); shell.openExternal(url); }
     });
-    win.on('close', (e) => { if (!quitting) { e.preventDefault(); win.hide(); } });
+    win.on('close', (e) => { if (!quitting) { e.preventDefault(); win.hide(); dockHide(); } });
+  }
+
+  // macOS: without an application menu, Cmd+C / Cmd+V / Cmd+Q do nothing (e.g. pasting a sign-in code).
+  function appMenu() {
+    if (!isMac) return null;
+    return Menu.buildFromTemplate([
+      { label: 'Baton', submenu: [{ role: 'about' }, { type: 'separator' }, { role: 'hide' }, { role: 'hideOthers' }, { role: 'unhide' }, { type: 'separator' }, { role: 'quit' }] },
+      { role: 'editMenu' },
+      { role: 'windowMenu' },
+    ]);
+  }
+
+  // Start at login: a LaunchAgent on macOS (it can pass --hidden), the OS login item elsewhere.
+  const loginArgs = () => (app.isPackaged ? ['--hidden'] : [app.getAppPath(), '--hidden']);
+  function setAutoStart(on) {
+    if (isMac) return require('./core/autostart').set(!!on, [process.execPath, ...loginArgs()]);
+    // Run from source ("electron ."), the login item must name the app folder too, or Windows would start
+    // a bare Electron (its default welcome window) at sign-in instead of Baton.
+    return app.setLoginItemSettings({ openAtLogin: !!on, args: loginArgs() });
   }
 
   function updateBusy(jobs) {
@@ -128,17 +170,19 @@ if (process.argv.includes('--disconnect')) {
   }
 
   app.on('second-instance', showWindow);
+  app.on('activate', showWindow); // macOS: Dock icon clicked, or Baton.app opened again from Finder
 
   app.whenReady().then(async () => {
-    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(appMenu());
+    if (isMac && !app.isPackaged && app.dock) app.dock.setIcon(asset('icon.png')); // run from source: not Electron's icon
+    // The app may have been moved since the LaunchAgent was written: keep it pointing at this copy.
+    if (isMac && require('./core/autostart').isOn()) setAutoStart(true);
     const label = (name, accounts) => accounts.find((a) => a.name === name)?.label || name;
 
     server = await createServer({
       shell: {
         isPanelVisible: () => !!win && win.isVisible() && !win.isMinimized(), // usage is read live only while someone is looking
-        // Run from source ("electron ."), the login item must name the app folder too, or Windows would start
-        // a bare Electron (its default welcome window) at sign-in instead of Baton.
-        setAutoStart: (on) => app.setLoginItemSettings({ openAtLogin: !!on, args: app.isPackaged ? ['--hidden'] : [app.getAppPath(), '--hidden'] }),
+        setAutoStart,
         quit: () => { quitting = true; app.quit(); },
         onLanguage: () => { buildMenu(); setTooltip(); },
         notify: (n, accounts) => {
@@ -153,7 +197,7 @@ if (process.argv.includes('--disconnect')) {
     });
     server.takeovers.on('update', updateBusy);
 
-    tray = new Tray(nativeImage.createFromPath(asset('tray.png')).resize({ width: 16, height: 16 }));
+    tray = new Tray(trayImage());
     setTooltip();
     buildMenu();
     tray.on('click', showWindow);

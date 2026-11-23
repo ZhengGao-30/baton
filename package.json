@@ -1,7 +1,7 @@
 {
   "name": "baton",
   "productName": "Baton",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Use several of your own Claude accounts from one Claude Code window: hand heavy jobs to your other accounts, with shared memory and usage at a glance.",
   "author": { "name": "ZhengGao-30", "url": "https://github.com/ZhengGao-30" },
   "homepage": "https://zhenggao-30.github.io/baton/",
@@ -29,7 +29,8 @@
     "start": "electron .",
     "dev": "node src/dev.js",
     "test": "node --test test/*.test.js",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac"
   },
   "devDependencies": {
     "electron": "^44.7.0",
@@ -48,6 +49,8 @@
       "build/icon.png",
       "build/icon.ico",
       "build/tray.png",
+      "build/trayTemplate.png",
+      "build/trayTemplate@2x.png",
       "package.json"
     ],
     "icon": "build/icon.png",
@@ -71,9 +74,26 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
       ],
-      "category": "public.app-category.developer-tools"
+      "icon": "build/icon.png",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "category": "public.app-category.developer-tools",
+      "artifactName": "Baton-mac-${arch}.${ext}"
     },
     "linux": {
       "target": [
