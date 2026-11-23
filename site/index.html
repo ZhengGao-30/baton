@@ -4,7 +4,7 @@
   1. index.html <head>: canonical, og:url, og:image, twitter:image (https://zhenggao-30.github.io/baton/...)
   2. index.html #get: the download and source links (static hrefs, so they work without JavaScript)
   3. script.js: the REPO constant, which sets the same #get hrefs on load
-  Release files expected at releases/latest/download/: Baton-Setup.exe and Baton-portable.exe.
+  Release files expected at releases/latest/download/: Baton-Setup.exe, Baton-portable.exe, Baton-mac-arm64.dmg and Baton-mac-x64.dmg.
 -->
 <html lang="zh-CN">
 <head>
@@ -486,7 +486,7 @@
         <li data-i18n="gk1">Baton 适合合法持有多个自有账号的人，比如个人账号和工作账号。</li>
         <li data-i18n="gk2">每个工作账号都用官方 Claude Code，在它自己的登录下运行。Baton 不会合并或共享同一个登录的额度。</li>
         <li data-i18n="gk3">每个账号的额度限制与条款依然适用：<a href="https://www.anthropic.com/legal/consumer-terms">Consumer Terms</a> 和 <a href="https://www.anthropic.com/legal/aup">Usage Policy</a>，以及组织的条款（如果账号是 Team 或 Enterprise 席位）。</li>
-        <li data-i18n="gk4">Windows 优先。</li>
+        <li data-i18n="gk4">支持 Windows 和 macOS；Linux 版能打包，但还没有测试过。</li>
         <li data-i18n="gk5">还没有在桌面 App 的 Code 标签页里遇到真实的套餐限额事件，故障转移路径目前用模拟事件测试。</li>
       </ul>
     </div>
@@ -497,20 +497,27 @@
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow" data-i18n="get_eyebrow">获取</p>
-        <h2 id="get-h" data-i18n="get_h">Windows · 0.1 早期版本</h2>
-        <p class="lead" data-i18n="get_p">下载安装包后运行，也可以直接阅读源码。</p>
+        <h2 id="get-h" data-i18n="get_h">Windows · macOS · 0.2 早期版本</h2>
+        <p class="lead" data-i18n="get_p">下载对应系统的安装包，也可以直接阅读源码。</p>
       </div>
       <div class="get-box">
         <div class="get-actions">
+          <span class="get-os">Windows</span>
           <a class="btn btn-ink" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-Setup.exe" data-repo-path="/releases/latest/download/Baton-Setup.exe" data-i18n="get_win">下载 Windows 版</a>
           <a class="btn btn-line" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-portable.exe" data-repo-path="/releases/latest/download/Baton-portable.exe" data-i18n="get_portable">便携版</a>
-          <a class="get-src" href="https://github.com/zhenggao-30/baton" data-repo-path="" data-i18n="get_source">在 GitHub 查看源码</a>
         </div>
+        <div class="get-actions">
+          <span class="get-os">macOS</span>
+          <a class="btn btn-ink" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-arm64.dmg" data-repo-path="/releases/latest/download/Baton-mac-arm64.dmg" data-i18n="get_mac">下载 Mac 版（Apple 芯片）</a>
+          <a class="btn btn-line" href="https://github.com/zhenggao-30/baton/releases/latest/download/Baton-mac-x64.dmg" data-repo-path="/releases/latest/download/Baton-mac-x64.dmg" data-i18n="get_mac_intel">Intel 芯片</a>
+        </div>
+        <a class="get-src" href="https://github.com/zhenggao-30/baton" data-repo-path="" data-i18n="get_source">在 GitHub 查看源码</a>
         <ul class="get-notes">
-          <li data-i18n="get_n1">适用于 Windows（目前只在 Windows 11 上测试过），并且需要已经装好 Claude Code（桌面 App 或命令行 CLI）。</li>
+          <li data-i18n="get_n1">适用于 Windows（在 Windows 11 上测试过）和 macOS 12 及以上（在 Apple 芯片的 macOS 26 上测试过），并且需要已经装好 Claude Code（桌面 App 或命令行 CLI）。</li>
           <li data-i18n="get_n2">安装包还没有代码签名，Windows SmartScreen 可能显示“未知发布者”。点“更多信息”，再点“仍要运行”。</li>
+          <li data-i18n="get_n2m">Mac 版：打开 .dmg，把 Baton 拖进“应用程序”。它还没有经过 Apple 公证，第一次打开时点“完成”，再到“系统设置 › 隐私与安全性”里点“仍要打开”。Baton 常驻在菜单栏。</li>
           <li data-i18n="get_n3">Baton 是开源软件（MIT 许可），每一行代码都可以读。</li>
-          <li data-i18n="get_n4">这是早期版本 0.1。</li>
+          <li data-i18n="get_n4">这是早期版本 0.2。</li>
         </ul>
         <div class="build">
           <h3 data-i18n="get_build_h">自己构建</h3>

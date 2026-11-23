@@ -370,7 +370,9 @@ h3 { font: 600 18px/1.35 var(--sans); letter-spacing: -0.01em; }
 .btn-ink:hover { opacity: 0.88; }
 .btn-line { border-color: var(--line-strong); color: var(--ink); }
 .btn-line:hover { background: var(--hover); }
-.get-src { margin-left: 6px; color: var(--accent-text); text-underline-offset: 3px; }
+.get-actions + .get-actions { margin-top: 14px; }
+.get-os { min-width: 76px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.get-src { display: inline-block; margin-top: 18px; color: var(--accent-text); text-underline-offset: 3px; }
 .get-notes { list-style: none; margin-top: 28px; display: grid; gap: 10px; color: var(--muted); font-size: 15px; }
 .get-notes li { position: relative; padding-left: 20px; }
 .get-notes li::before {

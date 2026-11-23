@@ -1,8 +1,9 @@
 name: release
 
-# Pushing a tag such as v0.1.0 builds the Windows installer and the portable exe,
-# then attaches both to the GitHub Release for that tag. action-gh-release creates
-# the Release if it does not exist yet.
+# Pushing a tag such as v0.2.0 builds the Windows installer and the portable exe, then the macOS
+# .dmg and .zip for Apple silicon (arm64) and Intel (x64), and attaches all of them to the GitHub
+# Release for that tag. action-gh-release creates the Release if it does not exist yet; the macOS
+# job waits for the Windows one so the two never race to create it.
 
 on:
   push:
@@ -33,3 +34,25 @@ jobs:
           files: |
             dist/Baton-Setup.exe
             dist/Baton-portable.exe
+
+  release-mac:
+    needs: release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build macOS dmg and zip (arm64 and x64)
+        # Ad-hoc signed (package.json build.mac.identity "-"); not notarized: there is no Developer ID yet.
+        run: npx electron-builder --mac --arm64 --x64 --publish never
+      - name: Attach to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Baton-mac-arm64.dmg
+            dist/Baton-mac-x64.dmg
+            dist/Baton-mac-arm64.zip
+            dist/Baton-mac-x64.zip

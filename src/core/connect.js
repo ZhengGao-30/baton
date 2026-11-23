@@ -137,6 +137,8 @@ async function uninstall() {
 async function removeAll({ logins = false } = {}) {
   await uninstall();
   fs.rmSync(`${hook.settingsPath()}.baton-backup`, { force: true });
+  // macOS has no uninstaller to clear the login item, so Remove Baton takes its LaunchAgent away too.
+  if (process.platform === 'darwin') require('./autostart').set(false);
   if (!logins) {
     for (const f of ['bin', 'connect.json', 'events.log', 'events.log.old', 'usage.json']) {
       fs.rmSync(path.join(store.home(), f), { recursive: true, force: true });
